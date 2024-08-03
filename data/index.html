@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DRLViz</title>
+
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="static/css/normalize.css">
+    <link rel="stylesheet" href="static/css/skeleton.css">
+
+    <style>
+
+        .tile {
+
+            border: #5a5a5a solid 1px;
+            padding: 5px;
+            text-align: center;
+            position: relative;
+        }
+
+        .tile:hover {
+            border: #5a5a5a solid 3px;
+            padding: 3px;
+            cursor: pointer;
+            background-color: rgba(70,70,70,0.2);
+        }
+
+        .thumbnail {
+            width: 300px;
+            height: 200px;
+
+
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!--    <div class="row">
+            <canvas id="obs" style="width: 255px;height: 145px;">
+
+            </canvas>
+
+        </div>-->
+
+    <div class="row">
+        <div class="twelve columns" style="margin-top: 15%;text-align: center">
+            <h2>DRLViz</h2>
+            <h5>Click on a algorithm to select it.</h5>
+        </div>
+
+    </div>
+
+    <div class="row" style="margin-top: 10%;">
+
+        <div class="six columns tile" onclick="load(1)">
+            <h4>A2C</h4>
+            <h5> epoch=10, epoch_steps=10000 </h5>
+            <!-- <img src="static/assets/health.png" class="thumbnail"> -->
+        </div>
+
+        <div class="six columns tile" onclick="load(2)">
+            <h4>DQN</h4>
+            <h5> epoch=10, epoch_steps=10000 </h5>
+            <!-- <img src="static/assets/arnold_teaser.png" class="thumbnail"> -->
+        </div>
+
+    </div>
+    <!-- <div class="row" style="margin-top: 5%;">
+        <div class="six columns tile" onclick="load(3)">
+            <h4>K-items</h4>
+            <h5>Collect 4 items in a specific order <br>(hidden_size=128, n_steps=178).</h5>
+            <img src="static/assets/item.png" class="thumbnail">
+        </div>
+
+
+        <div class="six columns tile" onclick="load(4)">
+            <h4>Two Colors</h4>
+            <h5>Collect one type of item with a color determined by a pillar
+               <br> (hidden_size=128, n_steps=525)</h5>
+            <img src="static/assets/twocols.png" class="thumbnail">
+        </div>
+    </div> -->
+
+
+</div>
+
+<script>
+
+    function load(url) {
+
+        window.location = 'main.html?algorithm=' + url
+
+
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2 @@
+a2cmytest.json filter=lfs diff=lfs merge=lfs -text
+mytest.json filter=lfs diff=lfs merge=lfs -text

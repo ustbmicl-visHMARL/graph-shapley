@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang = "en">
+<meta charset="utf-8">
+<style>
+    .circle {
+      fill: white;
+      stroke: black;
+      stroke-width: 2px;
+    }
+    /* 使用grid布局实现三列布局 */
+    .grid {
+        /* 为grid盒子开启grid布局 */
+        display: grid;
+        /* 使用grid-template-column 属性指定每列的宽度,可以是固定宽度px，也可以是浮动宽度fr，fr是grid布局专用单位，代表grid剩余空间 */
+        /* grid-template-columns: 300px1fr 1fr 1fr; */
+        /* 这里有三个数据，就说明grid的分布图为3列形式，这里都相等表示均分剩余空间 */
+        grid-template-columns: 500px 720px 980px ;
+        /* 或者使用gap属性统一设置，一下代码等同于上两行代码 */
+        gap: 5px;
+
+    }
+    .grid div {
+        background-color: rgb(255, 255, 255);
+    }
+
+    .axis text {
+        font: 15px sans-serif;
+    }
+
+    .axis  line{
+        fill: none;
+        stroke: rgb(0, 0, 0);
+        stroke-dasharray: 4;
+    } 
+    .text{
+            font-family:sans-serif;
+            font-size:15px;
+            text-anchor: middle; 
+        }
+</style>
+<head>
+    <script  src = "https://d3js.org/d3.v4.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script> -->
+    <title>DRLviz</title>
+
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/utils.js"></script>
+    <script src="static/js/metric.js"></script>
+    <script src="static/js/matrix.js"></script>
+    <script src="static/js/matrixV.js"></script>
+    <script src="static/js/distribution.js"></script>
+    <script src="static/js/trajectories.js"></script>
+    <script src="static/js/episodeHandler.js"></script>
+    <script src="static/js/timeline.js"></script>
+    <script src="static/js/draghandler.js"></script>
+    <script src="static/js/d3-lasso.min.js"></script>
+    <script src="static/js/tsne.js"></script>
+    
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <!-- <link href="static/css/lg.css" rel="stylesheet"/> -->
+    <script>
+        let url = new URL(window.location);
+        let c = url.searchParams.get("algorithm");
+        console.log(c);
+        switch (c) {
+            case "1":
+                algorithm = "A2C";
+                break;
+            case "2":
+                algorithm = "DQN";
+                break;
+        }
+        let datafile = './training_object_data/' + algorithm + "/mytest.json"//"./training_object_data/DQN_GCN/mytest1.json"
+    </script>
+</head>
+<body >
+<!--全局页面 -->
+<div class="grid" style="visibility: visible;height: 1000px; ">
+    <!--左侧列-->
+    <div style="grid-column: 1;width: 500px;position: relative;">
+       <!--左侧列第一图; text-align: center -->
+       <div id="input-cont" style="display: grid; grid-row: 1; text-align:left;width: 500px;height: 30px" >
+            <!--方向视图display: inline-block;-->
+            <!-- <svg id="distrib-svg" width="300" height="300" viewBox="  0 0 300 300"
+            style="right:0px;position: absolute;background-color: white;opacity: 1 !important;z-index: 200">
+            </svg> -->
+            <div  style="position:absolute;top: 100px;left: 230px;"> 
+                <!--回退按钮aria-label="Left Align" -->
+                <button type="button" id="thong" class="btn btn-default btn-lg" onclick="backward()"
+                aria-label="Left Align">
+                    <!--左箭头图标 -->
+                    <span class="fa fa-arrow-left fa-lg" aria-hidden="true"></span>
+                </button>
+                <!--播放按钮 -->
+                <button type="button" id="auto" class="btn btn-default btn-lg" onclick="switchauto()"
+                >
+                    <!--三角形图标 -->
+                    <span class="fa fa-play fa-lg" aria-hidden="true"></span>
+                </button>
+                <!--前进按钮style="margin-right: 15px"-->
+                <button type="button" id="thing" class="btn btn-default btn-lg" onclick="forward()"
+                 >
+                    <!--右箭头图标 -->
+                    <span class="fa fa-arrow-right fa-lg" aria-hidden="true"></span>
+                </button>
+            </div>    
+            <!--数字 -->
+            <!-- <p id="stepind"
+            style="display: inline-block;top: 100px;left:5%;position: absolute;opacity: 1 !important;z-index: 200;color: rgb(0, 0, 0);font-size: 20;font-weight: 200;">
+            0</p> -->
+            <!--角度 -->
+            <!-- <p id="theta"
+            style="display: inline-block;top: 100px;left:15%;position: absolute;opacity: 1 !important;z-index: 200;color: rgb(0, 0, 0);font-size: 20;font-weight: 200;">
+            </p>  -->
+       </div> 
+       <!--左侧列第二图 -->
+       <div style="display: grid; grid-row: 2; text-align: center;width: 500px; height: 450px;margin-top: 135px;">
+            <svg id="trajs" class="trajs1" width= "400px" height="400px" style="margin-left :80px;position: relative;background-color:rgb(223, 241, 241)">
+            </svg>
+        </div>
+        <!-- <h3 style="position:absolute; top:750px;right: 10px;font-family:sans-serif;font-size:15px;" >Exploration rate</h3> -->
+        <!--左侧列第三图 -->
+        <!-- <div style="display: grid; grid-row: 3; text-align: center;width: 500px; height: 450px;margin-top: 5px;">
+            <svg id="landmarkerror" width= "400px" height="400px" style="margin-left :50px;margin-right :50px;position: relative;background-color:rgb(243, 247, 208)">
+            </svg>
+        </div> -->
+        <!--左侧列第四图 -->
+        <!-- <div style="display: grid; grid-row: 4; text-align: center;width: 500px; height: 400px;margin-top: 5px;">
+            <svg id="mapentropy" width= "400px" height="400px" style="margin-left :50px;margin-right :50px;position: relative;background-color:rgb(243, 247, 208)">
+            </svg>
+        </div>  -->
+        <!--左侧列第三图-->
+        <!--<div style="display: grid; grid-row: 1; text-align: center;width: 500px; height: 500px;margin-top: 5px;">
+            <h3 style="position:relative; top:5px;left: -200px;font-family:sans-serif;font-size:15px;" >count</h3>
+            <h3 style="position:absolute; top:440px;right: -30px;font-family:sans-serif;font-size:15px;" >epoch</h3>
+            <svg id="epoch" width=500px height=500px style="padding: 5px;">
+            </svg>
+        </div> -->
+        
+    </div>
+    <!--中间列 -->
+    <div id='nb1' style="grid-column: 2; padding-top:px; width: 720px">
+        <!-- Steps -->
+        <div style="display: inline-block;position: relative;"
+                id="timeline">
+            <!-- <output id="tooltip1" name="rangeVal">50</output> -->
+            <h3 style="position:relative;left:30%;width: 250px;font-family:sans-serif;font-size:20px;">Uncertainty Changes</h3>
+            <svg id="legend"  style="position:absolute;right: 10px;top:10px;width: 230px;height: 80px;" >
+            </svg>
+            <!-- <img src="./color.png" width='230px' height='60px'style="position:absolute; top:10px;right: 10px;"> -->
+        </div>
+        <!-- 状态矩阵 -->
+        <div style="min-height: 700px;min-width: 600px">
+            <svg id="col1svg"class="evsvg" style="margin-top: 3px;width: 720px;height: 1000px;" 
+                style="z-index: 10000">
+            </svg>
+            <canvas height="820px" width="720px" id="matrix-canvas"style="position:absolute;top: 100px;left: 513px;opacity: 0.7 ;z-index: 0" ></canvas>
+            <svg id="explored"class="evsvg" style="position:absolute;left: 513px;top:750px;width: 720px;height: 100px;" >
+            </svg>
+            <!-- <div style="position:relative;float: right;margin-top: 38px;padding-right: 32px;text-align: center">
+                <div style="position: absolute;top:-28px;left: 10px; width:75px">
+                    <p id="hiddensl" style="width: 78%;display: inline;margin-top: 2px">
+                    </p>
+                </div>
+                <svg width="95" height="608"  id="currhidd">
+                </svg>
+            </div>  -->
+            
+        </div>
+        <h3 style="position:absolute; top:860px;left:520px;font-family:sans-serif;font-size:15px;" >Exploration rate</h3>
+    </div>
+    <!--右侧列-->
+    <div style="grid-column: 3; position: relative;">
+        <!--右侧列第一图-->
+        <div style="display: grid; grid-row: 1; text-align: center;width: 990px; height: 300px;margin-top: 5px;">
+            <h3 style="position:absolute; top:-8px;left: 15px;font-family:sans-serif;font-size:20px;" >Episode_count</h3>
+            <h3 style="position:absolute; top:270px;right: -35px;font-family:sans-serif;font-size:15px;" >epoch</h3>
+            <svg id="epoch" width=980px height=300px style="padding: 5px;">
+            </svg>
+        </div>
+        <!--右侧列第二图-->
+        <div style="display: grid; grid-row: 2; text-align: center;width: 990px; height: 300px;margin-top:8px;">
+            <h3 style="position:absolute; top:290px;left: 20px;font-family:sans-serif;font-size:20px;" >Avg_reward</h3>
+            <h3 style="position:absolute; top:400px;right: -40px;font-family:sans-serif;font-size:15px;" >episode</h3>
+            <svg id="reward" width=980px height=300px style="padding: 10px;">
+            </svg>
+        </div>
+        <!--右侧列第三图-->
+        <div style="display: grid; grid-row: 3; text-align: center;width: 990px; height: 400px;margin-top: 8px;">
+            <h3 style="position:absolute; top:592px;left: 20px;font-family:sans-serif;font-size:20px;" >Avg_loss</h3>
+            <h3 style="position:absolute; top:800px;right: -40px;font-family:sans-serif;font-size:15px;" >episode</h3>
+            <svg id="loss" width=980px height=400px style="padding: 5px;">
+            </svg>
+        </div>
+    </div>
+ </div>
+ 
+<script>
+
+    let auto = false;
+    let whichstep=0;
+    let megadata={};
+    let epocdata={};
+    let episodedata = {};
+    let colar = [[ '#1270B6', '#FF69B4']];//,蓝黄'#effce5''#2266a6', '#bf6b09'
+    let col = d3.scaleLinear().domain([0, 0.5]).range(colar[0]).interpolate(d3.interpolateHcl);
+    let twidth;
+    let memst = 60;
+    let can_pad = 22;
+    let sortype = "0";
+    let hiddencrops = [[], [], []];
+    let svg_traj, context_matrix;
+    
+    
+    d3.json(datafile,function(error, jsondata){		
+        if(error){
+            console.log(error);
+        }  
+        megadata=jsondata;
+        epocdata=megadata["epoch0"]
+        episodedata=megadata["epoch0"]["episode0"]
+        // episodedata=megadata["episode0"]
+        svg_traj = d3.select('#trajs');
+        svg_col1 = d3.select('#col1svg');
+        //svg_tsne = d3.select('#tsne');
+        canvas_matrix = d3.select('#matrix-canvas');
+        let theight = 720;
+        //235
+        twidth = $('#matrix-canvas').parent().width() ;
+        //$('#col1svg').css('width', (twidth + 28) + 'px');
+        $('#timeline').css('width', (twidth) + 'px');
+        // canvas_matrix.style('height', twidth + 'px');
+        // canvas_matrix.style('width', twidth + 'px');
+        context_matrix = canvas_matrix.node().getContext('2d');
+        //place_svg($('#col1svg'), $('#nb1').width());
+        context_matrix.scale(1, 0.8);
+        //megadata[episode] = tofloat(megadata[episode]);
+        // bunch = episodedata.observe[0].length;
+        // $('.hiddensl').html('' + bunch);
+        let rest = (theight * 542) / 685;
+        //ve_init_rows(d3.select('#currhidd'), megadata[episode].States[whichstep], rest);
+        mega_draw_matrix(episodedata.observe, context_matrix, col, memst);
+        //draw_metrics(megadata[episode], context_matrix, 0, 895);
+        init_svg(0, 0, 820);
+        // draw_obs();
+        maketime();
+        makelegend();
+        update_reward(0);
+        update_loss(0);
+        // draw_direction();
+        draw_traj(episodedata, whichstep);
+        draw_explored();
+        // makeState(svg_tsne, megadata[episode].observe);
+        draw_epoch();
+        // draw_reward(whichstep);
+        // draw_landmarkerror();
+        // draw_mapentropy();
+        // draw_loss();
+        d3.select('#dir_arrow')
+            .attr('transform', 'rotate(' +episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI+ ')');
+        // d3.select('#theta')
+        //     .text(episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI+"°")
+        setInterval(play, 200);
+        
+        
+    })
+
+    function makelegend(){
+        var colorlegend = [ '#1270B6', '#FF69B4'];
+            
+
+        // 创建 SVG 元素并设置宽高
+        var legendSvg = d3.select("#legend")
+            .append("svg");
+            // .attr("width", 230)
+            // .attr("height", 60);
+        
+        var defs = legendSvg.append("defs");
+        var linearGradient = defs.append("linearGradient")
+            .attr("id", "color-gradient")
+            .attr("x1", "0%")
+            .attr('y1', '0%')
+            .attr('x2', '100%')
+            .attr('y2', '0%');
+        
+        for (var i = 0; i < colorlegend.length; i++) {
+            linearGradient.append('stop')
+            .attr('offset', i / (colorlegend.length - 1))
+            .attr('stop-color', colorlegend[i]);
+        }
+        // 添加渐变条
+        var legend = legendSvg.append('rect')
+            .attr('x', 25)
+            .attr('y', 25)
+            .attr('width', 230)
+            .attr('height', 40)
+            .style('fill', 'url(#color-gradient)');
+
+
+        // 添加“不确定性”文本和箭头
+        legendSvg.append("text")
+            .attr("x", 30)
+            .attr("y", 20)
+            .text("uncertainty(0 ——> 0.5)")
+            .style('font-size', '15px')
+            .style('fill', '#666');
+
+        legendSvg.append('path')
+            .attr('d', 'M '+ (230 + 35) +' 35 L ' + (230 + 45) +' 30 L ' + (230 + 55) + ' 35')
+            .style('stroke', '#666')
+            .style('stroke-width', '1px')
+            .style('fill', 'none');
+    }
+
+    function maketime() {
+
+        $('#timebar').remove();
+        $('#timeline').append('<input id="timebar" list="steplist" style="outline: none;margin-left:0;width:720px;margin-top:20px;position:absolute;" type="range" min="0" max="' + (episodedata.step.length -1) + '" step="1" value="' + whichstep + '" >');
+
+        let tbar = $('#timebar');
+
+        let val = (tbar.val() - tbar.attr('min')) / (tbar.attr('max') - tbar.attr('min'));
+
+        tbar.css('background-image',
+            '-webkit-gradient(linear, left top, right top, '
+            + 'color-stop(' + val + ', #233E34), '
+            + 'color-stop(' + val + ', #C5C5C5)'
+            + ')'
+        );
+
+        $('#timeline input[type="range"]').on('input', function () {
+            let val = ($(this).val() - $(this).attr('min')) / ($(this).attr('max') - $(this).attr('min'));
+            whichstep = (parseInt($(this).val()) >= 0 ? parseInt($(this).val()) : 0);
+            update_step(whichstep);
+            update_line(whichstep);
+
+            $(this).css('background-image',
+                '-webkit-gradient(linear, left top, right top, '
+                + 'color-stop(' + val + ', #233E34), '//
+                + 'color-stop(' + val + ', #C5C5C5)'
+                + ')'
+        );
+    });
+
+        let control = $('#timebar'),
+        controlMin = control.attr('min'),
+        controlMax = control.attr('max'),
+        controlVal = control.val();
+
+        let thumb = 10;
+
+        let range = controlMax - controlMin;
+        let position = ((controlVal - controlMin) / range) * 100;
+
+        let positionOffset = Math.round(thumb * position / 100) - (thumb / 2) + 20;
+        
+    }
+
+    function doTicks() {
+
+        d3.selectAll("#tick").remove();
+
+        let scx = d3.scaleLinear().domain([0, episodedata.step.length-1]).range([9, 711]);
+
+        let svg = d3.select('#col1svg');
+
+        for (let i = 0; i < episodedata.step.length / 5 +1; i++) {
+            svg.append('rect')
+                .attr('x', (scx(5 * i)) + 'px')
+                .attr('y', (20) + 'px')
+                .attr('width', '2px')
+                .attr('height', (15) + 'px')
+                .style('fill', 'rgb(0, 0, 0)')
+                .attr('id', 'tick');
+
+            if (episodedata.step.length - (i * 5) >= 0) {
+                    svg.append('text')
+                        .attr('font-family', 'Helvetica')
+                        .attr('x', (scx(5 * i)-5 ) + 'px')//- (5 * i < 100 ? 7 : 15)
+                        .attr('y', (50) + 'px')
+                        .attr("stroke","black")
+                        .attr('id', 'tick')
+                        .style('font-size', '12pt')
+                        .text(5 * i)
+            }
+        } 
+        
+        // svg.append('rect')
+        //     .attr('x', (scx(episodedata.step.length - 1) ) + 'px')
+        //     .attr('y', (20) + 'px')
+        //     .attr('width', '2px')
+        //     .attr('height', (15) + 'px')
+        //     .style('fill', 'rgb(0,0, 0)')
+        //     .attr('id', 'tick');
+
+        // svg.append('text')
+        //     .attr('font-family', 'Helvetica')
+        //     .attr('x', (scx(episodedata.step.length - 1)  - 9) + 'px')
+        //     .attr('y', (50) + 'px')
+        //     //.style('color', 'rgb(120, 120, 120)')
+        //     .attr("stroke","black")
+        //     .attr('id', 'tick')
+        //     .style('font-size', '12pt')
+        //     .text((episodedata.step.length - 1));
+
+    }
+
+    function draw_mapentropy(){
+        var svg = d3.select("#mapentropy")
+            .append("svg")
+            .attr("width",400)
+            .attr("height",400)
+
+        var xScale = d3.scaleLinear()
+            .domain([0, episodedata.mapentropy.length])
+            .range([40, 380]);
+        
+        var yScale = d3.scaleLinear()
+            .domain([0, 140])
+            .range([380, 20]);
+
+        var xAxis = d3.axisBottom(xScale)
+        var yAxis = d3.axisLeft(yScale)
+
+        // 画x轴
+        svg.append('g')
+            .attr('class', 'axis axis-x')
+            .attr('transform', 'translate(0, ' + yScale(0) + ')')
+            .call(xAxis)
+            .attr('stroke-dasharray', '3 3')
+
+        // 画y轴
+        svg.append('g')
+            .attr('class', 'axis axis-y')
+            .attr('transform', 'translate(' + xScale(0) + ', 0)')
+            .call(yAxis)
+            .attr('stroke-dasharray', '3 3')
+        //折线
+        let linePath = d3.line()
+            .x(function(d,i){
+                return xScale(i);
+            })
+            .y(function(d){
+                return yScale(d);
+            })
+            .curve(d3.curveBasis)
+            
+        svg.append('path')
+            .attr("d",linePath(episodedata.mapentropy))
+            .attr("fill","none")
+            .attr("stroke-width","3")
+            .attr("stroke",'#25b309')//'blueviolet'
+            .on("mouseover", function(d,i) {
+                d3.select(this).append("title").attr("id", "tooltip")
+                    .text("A2C")      
+            })
+            .on("mouseout", function(d) {
+                d3.select("#tooltip").remove();
+            })
+        svg.append('path')
+            .attr("d",linePath(episodedata.mapentropy1))
+            .attr("fill","none")
+            .attr("stroke-width","3")
+            .attr("stroke",'blueviolet')//'blueviolet'
+            .on("mouseover", function(d,i) {
+                d3.select(this).append("title").attr("id", "tooltip")
+                    .text("DQN" )      
+            })
+            .on("mouseout", function(d) {
+                d3.select("#tooltip").remove();
+            })
+    }
+
+    function draw_landmarkerror(){
+        var svg = d3.select("#landmarkerror")
+            .append("svg")
+            .attr("width",400)
+            .attr("height",400)
+
+        var xScale = d3.scaleLinear()
+            .domain([0, episodedata.landmarkerror.length])
+            .range([40, 380]);
+        
+        var yScale = d3.scaleLinear()
+            .domain([0, 1])
+            .range([380, 20]);
+
+        var xAxis = d3.axisBottom(xScale)
+        var yAxis = d3.axisLeft(yScale)
+
+        // 画x轴
+        svg.append('g')
+            .attr('class', 'axis axis-x')
+            .attr('transform', 'translate(0, ' + yScale(0) + ')')
+            .call(xAxis)
+            .attr('stroke-dasharray', '3 3')
+
+        // 画y轴
+        svg.append('g')
+            .attr('class', 'axis axis-y')
+            .attr('transform', 'translate(' + xScale(0) + ', 0)')
+            .call(yAxis)
+            .attr('stroke-dasharray', '3 3')
+        //折线
+        let linePath = d3.line()
+            .x(function(d,i){
+                return xScale(i);
+            })
+            .y(function(d){
+                return yScale(d);
+            })
+            .curve(d3.curveBasis)
+            
+        svg.append('path')
+            .attr("d",linePath(episodedata.landmarkerror))
+            .attr("fill","none")
+            .attr("stroke-width","3")
+            .attr("stroke",'#25b309')//blueviolet'
+            .on("mouseover", function(d,i) {
+                d3.select(this).append("title").attr("id", "tooltip")
+                    .text("A2C")      
+            })
+            .on("mouseout", function(d) {
+                d3.select("#tooltip").remove();
+            })
+        svg.append('path')
+            .attr("d",linePath(episodedata.landmarkerror1))
+            .attr("fill","none")
+            .attr("stroke-width","3")
+            .attr("stroke",'blueviolet')//blueviolet'
+            .on("mouseover", function(d,i) {
+                d3.select(this).append("title").attr("id", "tooltip")
+                    .text("DQN" )      
+            })
+            .on("mouseout", function(d) {
+                d3.select("#tooltip").remove();
+            })
+    }
+
+    function getJsonLength(jsonData){
+    //获取JSON长度的方法
+        var jsonLength = 0;
+        for(var item in jsonData){
+            jsonLength++;
+        }
+        return jsonLength;
+    }   
+
+    function draw_epoch(){
+        var datest = [getJsonLength(megadata["epoch0"]),getJsonLength(megadata["epoch1"]),getJsonLength(megadata["epoch2"]),
+        getJsonLength(megadata["epoch3"]), getJsonLength(megadata["epoch4"]), getJsonLength(megadata["epoch5"]),
+        getJsonLength(megadata["epoch6"]), getJsonLength(megadata["epoch7"]),getJsonLength(megadata["epoch8"]), getJsonLength(megadata["epoch9"])];     //绘制柱形图所用的数据
+        //console.log(datest)
+		var width = 980;        //svg绘图区域的宽度
+		var height = 300;       //svg绘图区域的高度
+		var svg = d3.select('#epoch')       //选择<tbody>
+            .append('svg')					//在<tbody>中添加<svg>
+            .attr('width', width)				//设置<svg>的宽度属性
+            .attr('height', height)				//设置<svg>的高度属性
+		var padding = {top: 20, right: 20, bottom: 20, left: 20};     //定义上下左右的内边距
+		//矩形所占的宽度（包括空白）
+		var rectStep = 35;
+		//矩形所占的宽度（不包括空白）
+		var rectWidth = 60;
+        var xScale = d3.scaleLinear()
+            .domain([0, 10])
+            .range([40, 950]);
+        
+        var yScale = d3.scaleLinear()
+            .domain([0, 300])
+            .range([280, 40]);
+
+        var xAxis = d3.axisBottom(xScale)
+        var yAxis = d3.axisLeft(yScale)
+
+        // 画x轴
+        svg.append('g')
+            .attr('class', 'axis axis-x')
+            .attr('transform', 'translate(0, ' +yScale(0) + ')')
+            .call(xAxis)
+            //.attr('stroke-dasharray', '3 3')
+            .attr("stroke","black");
+
+        // 画y轴
+        svg.append('g')
+            .attr('class', 'axis axis-y')
+            .attr('transform', 'translate(' + xScale(0) + ', 0)')
+            .call(yAxis)
+            .attr("stroke","black");
+        
+		//绘制矩形
+		const rect = svg.selectAll('rect')			
+            .data(datest)							//绑定数据
+            .enter()									
+            .append('rect')						//添加rect元素，使他的数量和数组长度一致
+            .attr('fill', 'forestgreen')      //设置颜色为skyblue
+            .attr('x', function(d,i) {
+                return 15+xScale(i);					//设置矩形的x坐标
+            })
+            .attr('y', function(d) {
+                return yScale(d);        //设置矩形的y坐标
+            })
+            .attr('width', rectWidth)                //设置矩形的宽度
+            .attr('height', function(d) {
+                return yScale(0)-yScale(d);														//设置矩形的高度
+            })
+            // .on('click', function(d){
+            //     console.log(d)
+            // })
+            .on("click",function(d,i){
+                if(d3.select(this).attr("fill")=="forestgreen"){
+                    d3.select(this).attr("fill","lightgreen")
+                    $("#reward").empty(); 
+                    $("#loss").empty();                   
+                    update_reward(i);
+                    update_loss(i);
+                }
+                else{
+                    d3.select(this).attr("fill","forestgreen")
+                }
+			})
+            .on("mouseover", function(d,i) {
+                d3.select(this).append("title").attr("id", "tooltip")
+                    .text("(" +i +","+ d+")")    
+            })
+            .on("mouseout", function(d) {
+                d3.select("#tooltip").remove();
+            });
+        
+        const texts =svg.selectAll('.mytexts')//  const texts =
+            .data(datest)
+            .enter()
+            .append('text')
+            .attr("transform", "translate(0,10)")
+            .text(function(d){ return d;})
+            .attr("text-anchor", "middle")
+            .attr("x",function(d,i) {
+                return 20+xScale(i);})
+            .attr("y",function(d) {
+                return yScale(d);})
+            .attr('font-family', 'FontAwesome')
+            .attr("dx", 20)
+            .attr("dy", 20)
+            .attr("fill","white")
+            .attr("stroke", "white");
+        
+        // svg.append("line")
+        //     .attr("x1", 40)//450
+        //     .attr("y1", 450.5)//40
+        //     .attr("x2", 60)//50
+        //     .attr("y2", 450.5)//40
+        //     .attr("stroke", "white")
+        //     .attr("stroke-width", "1.5px");
+
+    }
+
+    function getAvgReward(episdata){
+        let avg_reward = 0;
+        let sum=0;
+        //console.log(episdata.stepreward[0])
+        for(var j = 0; j<episdata.stepreward.length; j++){
+            //console.log(j)
+            sum = sum + episdata.stepreward[j];
+            //console.log(episdata.stepreward[0])
+        }
+        //console.log(sum);
+        avg_reward = sum/episdata.stepreward.length;
+        //console.log(avg_reward);
+        return avg_reward;
+    }
+
+    function findMin(list1){
+        min = list1[0]
+        //console.log(min,max)
+        for(var i = 1;i < list1.length; i++){
+            if (list1[i] < min) {
+                min = list1[i]
+            }
+        }
+        if (min>0){
+            min = 0
+        }
+        return min	
+    }
+
+    function findMax(list1){
+        max = list1[0]
+        //console.log(min,max)
+        for(var i = 1;i < list1.length; i++){
+            if (list1[i] > max) {
+                max = list1[i]
+            }
+        }
+        return  max	
+    }
+		
+    function update_reward(i){
+        epocdata = megadata["epoch"+String(i)]
+        //console.log(epocdata)
+        var rectWidth = 3;
+        var datest=[]
+        var k = 0
+        //console.log(getJsonLength(megadata["epoch"+String(i)]["episode"+String(k)]["stepreward"]))
+        for(var m in epocdata){
+            episdata = epocdata[m]
+            //console.log(episdata)
+            datest[k] = getAvgReward(episdata)
+            k++;
+        }
+        //console.log(k)
+        //console.log(datest)
+        var svg = d3.select("#reward")
+            .append("svg")
+            .attr("width",980)
+            .attr("height",300)
+
+        var xScale = d3.scaleLinear()
+            .domain([0, getJsonLength(epocdata)])
+            .range([40, 950]);
+        
+        var min=0,max=0
+        min = findMin(datest)
+        max = findMax(datest)
+        //console.log(min,max)
+        var yScale = d3.scaleLinear()
+            .domain([min-0.3, max+0.3])
+            .range([280, 20]);
+
+        var xAxis = d3.axisBottom(xScale)
+        var yAxis = d3.axisLeft(yScale)
+
+        // 画x轴
+        svg.append('g')
+            .attr('class', 'axis axis-x')
+            .attr('transform', 'translate(0, ' + yScale(0) + ')')
+            .call(xAxis)
+            .attr("stroke","black");
+
+        // 画y轴
+        svg.append('g')
+            .attr('class', 'axis axis-y')
+            .attr('transform', 'translate(' + xScale(0) + ', 0)')
+            .call(yAxis)
+            .attr("stroke","black");
+
+        var rect = svg.selectAll('rect')			
+            .data(datest)							//绑定数据
+            .enter()									
+            .append('rect')						//添加rect元素，使他的数量和数组长度一致
+            .attr('fill', '#509FE0')      //设置颜色为skyblue
+            .attr('x', function(d,i) {
+                return xScale(i);					//设置矩形的x坐标
+            })
+            .attr('y', function(d) {
+                if(d>0){
+                    return yScale(d);//设置矩形的y坐标
+                }
+                else{
+                    return yScale(0);
+                }
+            })
+            .attr('width', rectWidth)                //设置矩形的宽度
+            .attr('height', function(d) {           //设置矩形的高度
+                if(d>0){
+                    return yScale(0)-yScale(d);	
+                }
+                else{
+                    //d3.select(this).attr('transform', 'rotate(180)');
+                    return yScale(d)-yScale(0);
+                }							
+            })
+
+            .on("click",function(d,i){
+                if(d3.select(this).attr("fill")=="#509FE0"){
+                    d3.select(this).attr("fill","lightblue")
+                    episodedata = epocdata["episode"+String(i)];
+                    whichstep = 0;
+                    $("#trajs").empty(); 
+                    draw_traj(episodedata, whichstep);
+                    // $('#stepind').html(whichstep).attr("stroke","black");
+                    d3.select('#dir_arrow')
+                        .attr('transform', 'rotate(' +episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI+ ')');
+                    // d3.select('#theta')
+                    //     .text(episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI+"°")
+                    maketime();
+                    update_line(whichstep);
+                    $("#explored").empty();
+                    draw_explored();
+                    init_svg(0, 0, 820);
+                    mega_draw_matrix(episodedata.observe, context_matrix, col, memst);
+                }
+                else{
+                    d3.select(this).attr("fill","#509FE0")
+                }
+			})
+            .on("mouseover", function(d,i) {
+                d3.select(this).append("title").attr("id", "tooltip")
+                    .text("(" +i +","+ d+")")    
+            })
+            .on("mouseout", function(d) {
+                d3.select("#tooltip").remove();
+            });
+    }
+
+    function getAvgLoss(episdata){
+        let avg_loss = 0;
+        let sum=0;
+        //console.log(episdata.stepreward[0])
+        for(var j = 0; j<episdata.loss.length; j++){
+            //console.log(j)
+            sum = sum + episdata.loss[j];
+            //console.log(episdata.stepreward[0])
+        }
+        //console.log(sum);
+        avg_loss = sum/episdata.loss.length;
+        //console.log(avg_reward);
+        return avg_loss;
+    }
+
+    function update_loss(i){
+        epocdata = megadata["epoch"+String(i)]
+        //console.log(epocdata)
+        var rectWidth = 3;
+        var datest=[]
+        var k = 0
+        //console.log(getJsonLength(megadata["epoch"+String(i)]["episode"+String(k)]["stepreward"]))
+        for(var m in epocdata){
+            episdata = epocdata[m]
+            //console.log(episdata)
+            datest[k] = getAvgLoss(episdata)
+            k++;
+        }
+        var svg = d3.select("#loss")
+            .append("svg")
+            .attr("width",980)
+            .attr("height",300)
+
+        var xScale = d3.scaleLinear()
+            .domain([0, getJsonLength(epocdata)])
+            .range([40, 950]);
+        
+        var min=0,max=0
+        min = findMin(datest)
+        max = findMax(datest)
+        //console.log(min,max)
+
+        var yScale = d3.scaleLinear()
+            .domain([min-0.1, max+0.1])
+            .range([280, 20]);
+
+        var xAxis = d3.axisBottom(xScale)
+        var yAxis = d3.axisLeft(yScale)
+
+        // 画x轴
+        svg.append('g')
+            .attr('class', 'axis axis-x')
+            .attr('transform', 'translate(0, ' + yScale(0) + ')')
+            .call(xAxis)
+            .attr("stroke","black");
+
+        // 画y轴
+        svg.append('g')
+            .attr('class', 'axis axis-y')
+            .attr('transform', 'translate(' + xScale(0) + ', 0)')
+            .call(yAxis)
+            .attr("stroke","black");
+
+        var rect = svg.selectAll('rect')			
+            .data(datest)							//绑定数据
+            .enter()									
+            .append('rect')						//添加rect元素，使他的数量和数组长度一致
+            .attr('fill', '#509FE0')      //设置颜色为skyblue
+            .attr('x', function(d,i) {
+                return xScale(i);					//设置矩形的x坐标
+            })
+            .attr('y', function(d) {
+                if(d>0){
+                    return yScale(d);//设置矩形的y坐标
+                }
+                else{
+                    return yScale(0);
+                }
+            })
+            .attr('width', rectWidth)                //设置矩形的宽度
+            .attr('height', function(d) {           //设置矩形的高度
+                if(d>0){
+                    return yScale(0)-yScale(d);	
+                }
+                else{
+                    //d3.select(this).attr('transform', 'rotate(180)');
+                    return yScale(d)-yScale(0);
+                }							
+            })
+
+            .on("click",function(d,i){
+                if(d3.select(this).attr("fill")=="#509FE0"){
+                    d3.select(this).attr("fill","lightblue")
+                }
+                else{
+                    d3.select(this).attr("fill","#509FE0")
+                }
+			})
+            .on("mouseover", function(d,i) {
+                d3.select(this).append("title").attr("id", "tooltip")
+                    .text("(" +i +","+ d+")")    
+            })
+            .on("mouseout", function(d) {
+                d3.select("#tooltip").remove();
+            });
+
+    }
+
+    function draw_traj(episodedata, whichstep) {
+        var frontier = episodedata.frontier[whichstep]//[11,-11],[11,-13]
+        var landmark = episodedata.landmark[whichstep]
+        //console.log(datest)
+        let mapx, mapy;
+
+        mapx = [-20, 20]
+        mapy = [-20, 20]
+
+        traj_x = d3.scaleLinear().range([10, 390]).domain(mapx);
+        traj_y = d3.scaleLinear().range([10, 390 ]).domain(mapy);
+
+        var xAxis = d3.axisBottom(traj_x)
+        var yAxis = d3.axisLeft(traj_y)
+
+        var svg = d3.select("#trajs")
+            .append("svg")
+
+        // 画x轴
+        svg.append('g')
+            .attr('class', 'axis axis-x')
+            .attr('transform', 'translate(0, ' + traj_y(0) + ')')
+            .call(xAxis)
+            .attr("stroke","black");
+
+        // 画y轴
+        svg.append('g')
+            .attr('class', 'axis axis-y')
+            .attr('transform', 'translate(' + traj_x(0) + ', 0)')
+            .call(yAxis)
+            .attr("stroke","black");
+
+        //let g = svg.append("g");
+        let line = d3.line()
+            .x(function (d) {
+                return traj_x(d[0]);
+            })
+            .y(function (d) {
+                return traj_y(d[1]);
+            })
+            
+        svg.append("path")
+            .data([episodedata.location])//
+            .attr("d", line)
+            .attr('stroke', 'steelblue')
+            .style("fill", "none")
+        
+        svg.selectAll("ellipse")
+            .data(frontier)
+            .enter()
+            .append("ellipse")
+            .attr("cx",function(d){   //d代表返回的整个数据集
+                return traj_x(d[0]);
+            })
+            .attr("cy",function(d){
+                return traj_y(d[1]);
+            })
+            .attr("rx", 4)
+            .attr("ry", 4)
+            .attr('fill', 'skyblue');
+
+        svg.selectAll("rect")
+            .data(landmark)
+            .enter()
+            .append("rect")
+            .attr("x",function(d){   //d代表返回的整个数据集
+                return traj_x(d[0]);
+            })
+            .attr("y",function(d){
+                return traj_y(d[1]);
+            })
+            .attr("width", 10)
+            .attr("height", 10)
+            .attr('fill', 'red');
+        
+        
+        draw_agent_path(svg, episodedata.location[whichstep], episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI)
+    }
+
+    function draw_explored(){
+        var explored = episodedata.explored//
+        //var landmark = episodedata.landmark[whichstep]
+        //console.log(datest)
+        let mapx, mapy;
+
+        mapx = [0, explored.length]
+        mapy = [0, 1]
+
+        traj_x = d3.scaleLinear().range([0,720]).domain(mapx);
+        traj_y = d3.scaleLinear().range([100, 0 ]).domain(mapy);
+
+        var xAxis = d3.axisBottom(traj_x)
+        var yAxis = d3.axisLeft(traj_y)
+
+        var svg = d3.select("#explored")
+            .append("svg")
+
+        svg.selectAll("circle")
+            .data(explored)
+            .enter()
+            .append("circle")
+            .attr("cx",function(d,i){   //d代表返回的整个数据集
+                return traj_x(i)+360/explored.length;
+            })
+            .attr("cy",function(d){
+                return traj_y(d);
+            })
+            .attr("r", 5)
+            .attr('fill', 'steelblue')
+            .on("mouseover", function(d,i) {
+                d3.select(this).append("title").attr("id", "tooltip")
+                    .text("(" +i +","+ d+")")    
+            })
+            .on("mouseout", function(d) {
+                d3.select("#tooltip").remove();
+            });
+        
+        svg.append("line")
+            .attr("x1", 0)
+            .attr("y1", 2)
+            .attr("x2", 720)
+            .attr("y2", 2)
+            .attr("stroke", "black")
+            .attr("stroke-width", "5px");
+        
+        svg.append("line")
+            .attr("x1",0)
+            .attr("y1", 99)
+            .attr("x2", 720)
+            .attr("y2", 99)
+            .attr("stroke", "black")
+            .attr("stroke-width", "5px");
+
+    }
+
+    function update_line(whichstep) {
+
+        let scx = d3.scaleLinear().domain([0, episodedata.step.length - 1]).range([0, 702]);//twidth - 6
+        if (whichstep >= 0 && whichstep <= episodedata.step.length - 1) {
+            d3.selectAll('.tl')
+                .attr("transform", () => "translate(" + (scx(whichstep)) + ",0)");
+        }
+
+    }
+
+    function init_svg(offx, offy, height) {
+        d3.selectAll(".tl").remove();
+        let scx = d3.scaleLinear().domain([0, episodedata.step.length-1 ]).range([9, 711]);
+
+        let svg =svg_col1 ;
+        let short = 360/episodedata.step.length;
+        //console.log(short);
+        let data = [
+            {
+                'x1': offx + scx(whichstep) -  short,
+                'y1': 0 + offy,
+                'x2': offx + scx(whichstep) -  short,
+                'y2': height + offy
+            },
+            {
+                'x1': offx + scx(whichstep),
+                'y1': 0 + offy ,
+                'x2': offx + scx(whichstep),
+                'y2': height + offy
+            },
+            {
+                'x1': offx + scx(whichstep) + short,
+                'y1': 0 + offy,
+                'x2': offx + scx(whichstep) + short,
+                'y2': height + offy
+            }
+        ];
+
+
+        let lines = svg
+            .selectAll('line')
+            .data(data)
+            .enter()
+            .append('line')
+            .attr('class', 'tl')
+            .attr('x1', function (d) {
+                return d.x1
+            })
+            .attr('x2', function (d) {
+                return d.x2
+            })
+            .attr('y1', function (d) {
+                return d.y1
+            })
+            .attr('y2', function (d) {
+                return d.y2
+            })
+            .attr('stroke-dasharray', function (d, i) {
+                if (i !== 1) {
+                    return '5,5'
+                } else {
+                    return ''
+                }
+            })
+            .attr("stroke", "black")
+
+        // test_rect(svg, offx, offy, scx(whichstep) - 20, scx(whichstep) + 20, height)
+        doTicks();
+    }
+
+    function draw_agent_path(svg, pos, or) {
+
+    //d3.selectAll('.agent').remove();
+
+    svg.append('ellipse')
+        .attr("cx", traj_x(pos[0]))
+        .attr("cy", traj_y(pos[1]))
+        .attr("rx", traj_x(5)-traj_x(0))
+        .attr("ry", traj_x(5)-traj_x(0))
+        .attr('fill', 'steelblue')
+        .attr("opacity",0.5);//视野圆
+
+    // const circle = svg.append("circle");
+
+    // circle.attr("r", 0)
+    //   .attr("cx", 0)
+    //   .attr("cy", 0);
+
+    var svg = svg.append('path')
+            .attr('d', "M 15.8,8.3 0.8,15.8 5,8.3 0.8,0.8 Z")
+            .attr('id', 'agent')
+            .attr('transform', 'translate(' + (traj_x(pos[0]) - 7.5) + ',' + (traj_y(pos[1]) - 7.5) + ') rotate(' + or + ' ' + (7.5) + ' ' + (7.5) + ')');
+            
+    magnifier = d3.select('#agent');
+    magnifier.on('mouseenter', function() {
+    // 将鼠标样式更改为指定图片
+        d3.select(this).style('cursor', 'url(magnifier-class.ico), auto');
+    });
+
+    direction = d3.select('.trajs1');
+    direction.on("mousedown", function() {
+        // 获取鼠标位置
+        var coords = d3.mouse(this);
+        var circle = direction.append("circle")
+            .attr("cx", coords[0])
+            .attr("cy", coords[1])
+            .attr("r", 80)
+            .style("opacity", 0.1)
+            .attr("filter", "drop-shadow(2px 2px 4px rgba(230,230,230,0.1))");
+
+        var compass = direction.append("g")
+            .attr("id", "compass")
+            .selectAll("g")
+            .data(d3.range(0,360, 45))
+            .enter().append("g")
+            .attr("stroke","#778899")
+            .attr("transform", function(d) {
+            return "translate("+coords[0]+","+ coords[1]+") rotate(" + d + ")";
+            }) ;
+
+        compass.append("line")
+            .attr("x2", 54)
+            .style("stroke-dasharray","5,5")
+            .attr("stroke","#778899");
+            
+        compass.append("text")
+            .attr("x", 60)
+            .attr("transform", function(d) {
+            return d < 270 && d > 90 ? "rotate(180 " + (66) + ",0)" : null;
+            })
+            .text(function(d,i) { return i*45 + "°" })
+            .attr("stroke","#778899");
+        
+        var arrow = direction.append('text')
+            .attr('font-family', 'FontAwesome')
+            .attr('font-size', '20pt')
+            .attr('id', 'arrow')
+            // .attr("x", coords[0])
+            // .attr("y", coords[1])
+            .attr('text-anchor',"middle")//水平和垂直居中
+            .attr("alignment-baseline", "middle")
+            .text(function (d) {
+                return '\uf178';//u2b06
+            })
+            .attr("transform", "translate("+coords[0]+","+ coords[1]+") rotate(" +episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI+ ')');
+        
+        
+    });
+
+    direction.on("mouseup", function() {
+              // 隐藏圆圈
+              // 如果当前存在圆形元素
+        direction.selectAll("circle").remove();
+        direction.selectAll("#arrow").remove();
+        direction.selectAll("#compass").remove();        
+    });
+   
+
+    }
+
+    function rotate_arrow(whichstep){
+        d3.select('#dir_arrow')
+            .attr('transform', 'rotate(' +episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI+ ')');
+        // d3.select('#theta').text(episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI+"°")
+        //console.log(megadata[whichstep].Theta)
+    }
+
+    function update_step(whichstep) {
+        // $('#stepind').html(whichstep);
+        $("#trajs").empty(); 
+        draw_traj(episodedata, whichstep);
+        rotate_arrow(whichstep);
+        // draw_agent_path(svg_traj, episodedata.location[whichstep], episodedata.theta[(whichstep+1)%episodedata.theta.length]*180/Math.PI);
+        
+        // find_cur_dot(svg_tsne, whichstep);
+    }
+
+    function backward() {
+        
+        if (whichstep-1>=0) {//episodedata.step[whichstep-1]
+            whichstep--;
+            update_step(whichstep);
+            update_line(whichstep);
+            //draw_reward(whichstep);
+            maketime();
+        }
+    }
+
+    function forward() {
+
+        
+        if (episodedata.step[whichstep+1]) {
+            whichstep++;
+            update_step(whichstep);
+            update_line(whichstep);
+            //draw_reward(whichstep);
+            maketime();
+        } 
+        else if (auto) {
+            switchauto()
+        }
+    }
+
+    function play() {
+        
+        if (auto)
+            forward()
+    }
+
+    function switchauto() {
+        auto = !auto;
+        let sp = $('#auto span');
+        if (auto)
+        {
+            sp.removeClass('fa-play');
+            sp.addClass('fa-pause');
+        } else 
+        {
+            sp.removeClass('fa-pause');
+            sp.addClass('fa-play')
+            
+        }
+    }
+
+    function draw_direction(){
+
+        var radius = 110;
+
+        var svg = d3.select("#distrib-svg")
+            .append("svg")
+            .attr("width", 300)
+            .attr("height", 300)
+            .append("g")
+            .attr("transform", "translate(" + 150 + "," + 150 + ")");
+            
+        
+        var ga = svg.append("g")
+            .attr("class", "a axis")
+            .selectAll("g")
+            .data(d3.range(0,360, 45))
+            .enter().append("g")
+            .attr("transform", function(d) {
+            return "rotate(" + d + ")";
+            })
+            .attr("stroke","black");
+
+        ga.append("line")
+            .attr("x2", radius-6)
+            .attr("stroke","black");
+            
+        ga.append("text")
+            .attr("x", radius)
+            .attr("transform", function(d) {
+            return d < 270 && d > 90 ? "rotate(180 " + (radius + 6) + ",0)" : null;
+            })
+            .text(function(d,i) { return i*45 + "°" })
+            .attr("stroke","black");
+
+        svg.append('text')
+            .attr('font-family', 'FontAwesome')
+            .attr('font-size', '30pt')
+            .attr('id', 'dir_arrow')
+            .attr('text-anchor',"middle")//水平和垂直居中
+            .attr('dy',".35em")
+            .text(function (d) {
+                return '\uf178';//u2b06
+            })
+    }
+    
+</script>
+</body> 
+</html>

@@ -1,0 +1,102 @@
+[
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/Planner2D.cpp.o -c /home/clp/DRL_graph_exploration/src/Planner2D.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/Planner2D.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/halton/halton.cpp.o -c /home/clp/DRL_graph_exploration/src/halton/halton.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/halton/halton.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/em_exploration/Utils.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/Utils.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/Utils.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/em_exploration/Distance.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/Distance.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/Distance.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/em_exploration/Simulator2D.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/Simulator2D.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/Simulator2D.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/em_exploration/SLAM2D.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/SLAM2D.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/SLAM2D.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/em_exploration/FastMarginals.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/FastMarginals.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/FastMarginals.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/em_exploration/VirtualMap.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/VirtualMap.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/VirtualMap.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/em_exploration/OccupancyMap.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/OccupancyMap.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/OccupancyMap.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dplanner2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/planner2d.dir/src/em_exploration/Planner2D.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/Planner2D.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/Planner2D.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/SS2D.cpp.o -c /home/clp/DRL_graph_exploration/src/SS2D.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/SS2D.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/halton/halton.cpp.o -c /home/clp/DRL_graph_exploration/src/halton/halton.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/halton/halton.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/em_exploration/Utils.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/Utils.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/Utils.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/em_exploration/Distance.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/Distance.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/Distance.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/em_exploration/Simulator2D.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/Simulator2D.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/Simulator2D.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/em_exploration/SLAM2D.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/SLAM2D.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/SLAM2D.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/em_exploration/FastMarginals.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/FastMarginals.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/FastMarginals.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/em_exploration/VirtualMap.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/VirtualMap.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/VirtualMap.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/em_exploration/OccupancyMap.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/OccupancyMap.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/OccupancyMap.cpp"
+},
+{
+  "directory": "/home/clp/DRL_graph_exploration/build",
+  "command": "/usr/bin/c++  -Dss2d_EXPORTS -I/usr/local/lib/cmake/GTSAM/../../../include -I/usr/local/include/gtsam/3rdparty/Eigen -I/usr/local/include/gtsam/3rdparty/Eigen/gtsam/3rdparty/Eigen -I/home/clp/DRL_graph_exploration/include -isystem /usr/local/include -isystem /usr/include/python3.6m   -std=c++11 -O3 -g -fPIC -fvisibility=hidden   -std=gnu++11 -o CMakeFiles/ss2d.dir/src/em_exploration/Planner2D.cpp.o -c /home/clp/DRL_graph_exploration/src/em_exploration/Planner2D.cpp",
+  "file": "/home/clp/DRL_graph_exploration/src/em_exploration/Planner2D.cpp"
+}
+]
